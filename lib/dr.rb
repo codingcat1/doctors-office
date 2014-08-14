@@ -1,18 +1,17 @@
 require 'pg'
 
 class Dr
-  attr_reader(:attributes, :name, :id)
+  attr_reader(:attributes, :name, :id, :specialty)
 
   def initialize(attributes)
     @attributes = attributes
     @name = attributes[:name]
     @id = attributes[:id]
-
+    @specialty = attributes[:specialty]
   end
 
   def self.all
-    database = PG.connect({:dbname => 'dr_office'})
-    results = database.exec("SELECT * FROM dr;")
+    results = DB.exec("SELECT * FROM dr;")
     drs = []
     results.each do |result|
       name = result['name']
@@ -23,8 +22,7 @@ class Dr
   end
 
   def save
-    database = PG.connect({:dbname => 'dr_office'})
-    database.exec("INSERT INTO dr (name) VALUES ('#{@name}');")
+    DB.exec("INSERT INTO dr (name, specialty) VALUES ('#{@name}', '#{specialty}');")
   end
 
   def ==(another_dr)
