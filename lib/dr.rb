@@ -1,13 +1,14 @@
 require 'pg'
 
 class Dr
-  attr_reader(:attributes, :name, :id, :specialty)
+  attr_reader(:attributes, :name, :id, :specialty_id, :insurance_id)
 
   def initialize(attributes)
     @attributes = attributes
     @name = attributes[:name]
     @id = attributes[:id]
-    @specialty = attributes[:specialty]
+    @specialty_id = attributes[:specialty_id]
+    @insurance_id = attributes[:insurance_id]
   end
 
   def self.all
@@ -16,13 +17,15 @@ class Dr
     results.each do |result|
       name = result['name']
       id = result['id']
+      specialty_id = result['specialty_id'].to_i
+      insurance_id = result['insurance_id'].to_i
       drs << Dr.new({:name => name, :id => id})
     end
     drs
   end
 
   def save
-    DB.exec("INSERT INTO dr (name, specialty) VALUES ('#{@name}', '#{specialty}');")
+    DB.exec("INSERT INTO dr (name, specialty_id, insurance_id) VALUES ('#{@name}', #{@specialty_id}, #{@insurance_id});")
   end
 
   def ==(another_dr)
