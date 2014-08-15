@@ -1,9 +1,10 @@
 class Insurance
-  attr_reader(:name, :attributes)
+  attr_reader(:name, :attributes, :id)
 
   def initialize(attributes)
     @name = attributes[:name]
     @attributes = attributes
+    @id = attributes[:id]
   end
 
   def self.all
@@ -17,7 +18,8 @@ class Insurance
   end
 
   def save
-    DB.exec("INSERT INTO insurance (name) VALUES ('#{@name}');")
+    results = DB.exec("INSERT INTO insurance (name) VALUES ('#{@name}') RETURNING id;")
+    @id = results.first['id'].to_i
   end
 
   def ==(another_insurance)

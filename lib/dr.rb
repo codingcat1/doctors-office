@@ -19,13 +19,14 @@ class Dr
       id = result['id']
       specialty_id = result['specialty_id'].to_i
       insurance_id = result['insurance_id'].to_i
-      drs << Dr.new({:name => name, :id => id})
+      drs << Dr.new({:name => name, :id => id, :specialty_id => specialty_id, :insurance_id => insurance_id})
     end
     drs
   end
 
   def save
-    DB.exec("INSERT INTO dr (name, specialty_id, insurance_id) VALUES ('#{@name}', #{@specialty_id}, #{@insurance_id});")
+    results = DB.exec("INSERT INTO dr (name, specialty_id, insurance_id) VALUES ('#{@name}', #{@specialty_id}, #{@insurance_id}) RETURNING id;")
+    @id = results.first['id'].to_i
   end
 
   def ==(another_dr)

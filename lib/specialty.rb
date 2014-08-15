@@ -1,11 +1,12 @@
 require 'pg'
 
 class Specialty
-  attr_reader(:attributes, :name)
+  attr_reader(:attributes, :name, :id)
 
   def initialize(attributes)
     @attributes = attributes
     @name = attributes[:name]
+    @id = attributes[:id]
   end
 
   def self.all
@@ -19,7 +20,8 @@ class Specialty
   end
 
   def save
-    DB.exec("INSERT INTO specialty (name) VALUES ('#{@name}');")
+    results = DB.exec("INSERT INTO specialty (name) VALUES ('#{@name}') RETURNING id;")
+    @id = results.first['id'].to_i
   end
 
   def ==(another_specialty)
